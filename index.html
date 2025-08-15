@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A&T Intelligence - Automação com I.A.</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <style>
+        /* Custom Styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .hero-gradient {
+            background: radial-gradient(circle at top left, rgba(239, 246, 255, 0.9), transparent 50%),
+                        radial-gradient(circle at bottom right, rgba(219, 234, 254, 0.7), transparent 60%);
+        }
+        .cta-gradient {
+            background: radial-gradient(circle at top, rgba(219, 234, 254, 0.9), transparent 80%);
+        }
+        .subtle-bg-pattern {
+             background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23f1f5f9' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Testimonial slider styles */
+        .testimonial-slider {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none; /* Firefox */
+        }
+        .testimonial-slider::-webkit-scrollbar {
+            display: none; /* Safari and Chrome */
+        }
+        .testimonial-card {
+            flex: 0 0 90%;
+            scroll-snap-align: center;
+        }
+        @media (min-width: 640px) {
+            .testimonial-card {
+                flex: 0 0 80%;
+            }
+        }
+        @media (min-width: 768px) {
+            .testimonial-card {
+                flex: 0 0 45%;
+            }
+        }
+        @media (min-width: 1024px) {
+            .testimonial-slider {
+                overflow-x: visible;
+            }
+            .testimonial-card {
+                flex: 1 1 0px;
+            }
+        }
+        /* Loading Spinner */
+        .loader {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #ffffff;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        .loader-dark {
+            border: 3px solid #e5e7eb; /* gray-200 */
+            border-top: 3px solid #3b82f6; /* blue-500 */
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <!-- 0. Navigation Bar -->
+    <header id="navbar" class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-200/80 transition-all duration-300">
+        <div class="container mx-auto px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 md:flex-1">
+                    <a href="#" class="text-2xl font-bold text-slate-900 tracking-tight">A&T Intelligence</a>
+                </div>
+                
+                <!-- Desktop Navigation Links -->
+                <nav class="hidden lg:flex lg:justify-center lg:items-center lg:space-x-10">
+                    <a href="#features" class="text-base font-medium text-slate-600 hover:text-blue-700 transition-colors">Funcionalidades</a>
+                    <a href="#roi-calculator" class="text-base font-medium text-slate-600 hover:text-blue-700 transition-colors">Calculadora ROI</a>
+                    <a href="#testimonials" class="text-base font-medium text-slate-600 hover:text-blue-700 transition-colors">Depoimentos</a>
+                    <a href="#faq" class="text-base font-medium text-slate-600 hover:text-blue-700 transition-colors">FAQ</a>
+                </nav>
+
+                <!-- Right Aligned Items -->
+                <div class="flex items-center justify-end md:flex-1">
+                    <!-- CTA Button -->
+                    <div class="hidden lg:block">
+                        <a href="https://wa.me/21996293642" target="_blank" rel="noopener noreferrer" class="inline-block bg-blue-700 text-white font-semibold text-base px-5 py-3 rounded-xl shadow-lg hover:bg-blue-800 transition-all transform hover:scale-105 hover:shadow-blue-300">
+                            Agendar Diagnóstico
+                        </a>
+                    </div>
+
+                    <!-- Mobile Menu Button -->
+                    <div class="lg:hidden">
+                        <button id="mobile-menu-button" class="text-slate-700 hover:text-blue-700 p-2 -mr-2">
+                            <i data-feather="menu" class="w-7 h-7"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-white border-t border-slate-200">
+            <div class="px-6 pt-4 pb-6 space-y-3">
+                <a href="#features" class="block text-base font-semibold text-slate-700 hover:text-blue-700 transition-colors py-2">Funcionalidades</a>
+                <a href="#roi-calculator" class="block text-base font-semibold text-slate-700 hover:text-blue-700 transition-colors py-2">Calculadora ROI</a>
+                <a href="#testimonials" class="block text-base font-semibold text-slate-700 hover:text-blue-700 transition-colors py-2">Depoimentos</a>
+                <a href="#faq" class="block text-base font-semibold text-slate-700 hover:text-blue-700 transition-colors py-2">FAQ</a>
+                <a href="https://wa.me/21996293642" target="_blank" rel="noopener noreferrer" class="mt-4 w-full inline-block text-center bg-blue-700 text-white font-semibold text-base px-5 py-3 rounded-xl shadow-md hover:bg-blue-800 transition-all">
+                    Agendar Diagnóstico
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="pt-20">
+        <!-- 1. Hero Section -->
+        <section class="relative overflow-hidden hero-gradient pt-24 pb-28 md:pt-40 md:pb-48">
+            <div class="container mx-auto px-6 lg:px-8">
+                <div class="grid lg:grid-cols-2 gap-x-12 gap-y-16 items-center">
+                    <div class="text-center lg:text-left fade-in">
+                        <span class="inline-block bg-blue-100 text-blue-800 text-sm font-semibold px-4 py-1.5 rounded-full mb-6">
+                            +50 empresas, consultórios e clínicas atendidas
+                        </span>
+                        <h1 class="text-5xl md:text-6xl font-extrabold text-slate-900 leading-tight tracking-tighter mb-6">
+                            Reduza 70% do Tempo em Processos Repetitivos com Automação I.A
+                        </h1>
+                        <p class="text-xl text-slate-700 mb-10 max-w-xl mx-auto lg:mx-0">
+                            Consultoria especializada para empresas que querem escalar sem precisar contratar mais.
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-10">
+                            <a href="https://wa.me/21996293642" target="_blank" rel="noopener noreferrer" class="bg-blue-700 text-white font-semibold text-lg px-8 py-4 rounded-xl shadow-lg hover:bg-blue-800 transition-all transform hover:scale-105 hover:shadow-blue-300">
+                                Agendar Diagnóstico
+                            </a>
+                            <a href="#features" class="bg-white text-slate-800 font-semibold text-lg px-8 py-4 rounded-xl border-2 border-slate-300 hover:bg-slate-100 hover:border-slate-400 transition-all transform hover:scale-105">
+                                Saiba Mais
+                            </a>
+                        </div>
+                        <p class="text-base font-medium text-slate-600">
+                            <strong>300% ROI médio</strong> em 6 meses
+                        </p>
+                    </div>
+                    <div class="relative fade-in" style="transition-delay: 200ms;">
+                        <img src="https://placehold.co/800x600/dbeafe/1e3a8a?text=Dashboard+de+IA" alt="Dashboard de Automação IA" class="rounded-3xl shadow-2xl w-full h-auto object-cover transform hover:scale-105 transition-transform duration-500">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Credibility Logos -->
+        <section class="py-16 bg-white">
+            <div class="container mx-auto px-6 lg:px-8">
+                <div class="flex flex-wrap justify-center items-center gap-x-10 gap-y-6 md:gap-x-16 lg:gap-x-20">
+                    <img src="https://placehold.co/150x50/f1f5f9/64748b?text=Microsoft" alt="Microsoft Partner" class="h-9 opacity-70 grayscale hover:grayscale-0 hover:opacity-100 transition-all">
+                    <img src="https://placehold.co/150x50/f1f5f9/64748b?text=AWS" alt="AWS Certified" class="h-9 opacity-70 grayscale hover:grayscale-0 hover:opacity-100 transition-all">
+                    <img src="https://placehold.co/150x50/f1f5f9/64748b?text=Google+Cloud" alt="Google Cloud Partner" class="h-9 opacity-70 grayscale hover:grayscale-0 hover:opacity-100 transition-all">
+                    <img src="https://placehold.co/150x50/f1f5f9/64748b?text=GPT+Maker" alt="GPT Maker" class="h-9 opacity-70 grayscale hover:grayscale-0 hover:opacity-100 transition-all">
+                    <img src="https://placehold.co/120x50/f1f5f9/64748b?text=N8N" alt="N8N Partner" class="h-8 opacity-70 grayscale hover:grayscale-0 hover:opacity-100 transition-all">
+                    <img src="https://placehold.co/120x50/f1f5f9/64748b?text=MAKE" alt="MAKE Partner" class="h-8 opacity-70 grayscale hover:grayscale-0 hover:opacity-100 transition-all">
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Features Section -->
+        <section id="features" class="py-24 md:py-32 subtle-bg-pattern">
+            <div class="container mx-auto px-6 lg:px-8">
+                <div class="text-center mb-20">
+                    <h2 class="text-4xl md:text-5xl font-bold text-slate-900 mb-5 tracking-tight">Uma Solução Completa Para Sua Empresa</h2>
+                    <p class="text-xl text-slate-700 max-w-3xl mx-auto">Do diagnóstico à implementação e suporte, cuidamos de tudo para você focar no que realmente importa.</p>
+                </div>
+                <div class="space-y-10">
+                    <!-- Main Card -->
+                    <div class="bg-white p-10 rounded-3xl shadow-xl border border-slate-200/80 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 fade-in">
+                        <div class="flex flex-col lg:flex-row items-center gap-10">
+                            <img src="https://placehold.co/600x450/dbeafe/1e3a8a?text=Análise+de+Processos" alt="Diagnóstico Completo" class="w-full lg:w-2/5 h-auto rounded-2xl object-cover">
+                            <div class="flex-1">
+                                <h3 class="text-3xl font-bold text-slate-900 mb-4">Diagnóstico Completo</h3>
+                                <p class="text-lg text-slate-700">Analisamos profundamente todos os seus processos operacionais e administrativos para identificar os principais gargalos e oportunidades de automação. Com base nisso, criamos um plano de ação personalizado e detalhado para sua empresa.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Secondary Cards -->
+                    <div class="grid md:grid-cols-3 gap-10">
+                        <div class="bg-white p-8 rounded-3xl shadow-xl border border-slate-200/80 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 fade-in" style="transition-delay: 150ms;">
+                            <h3 class="text-2xl font-bold text-slate-900 mb-3">Implementação Simples</h3>
+                            <p class="text-lg text-slate-700">Configuramos e integramos todas as ferramentas de automação necessárias sem complicação técnica para você ou sua equipe.</p>
+                        </div>
+                        <div class="bg-white p-8 rounded-3xl shadow-xl border border-slate-200/80 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 fade-in" style="transition-delay: 300ms;">
+                            <h3 class="text-2xl font-bold text-slate-900 mb-3">Treinamento Completo</h3>
+                            <p class="text-lg text-slate-700">Capacitamos sua equipe para utilizar as novas ferramentas com eficiência, garantindo uma transição suave e a máxima adoção.</p>
+                        </div>
+                        <div class="bg-white p-8 rounded-3xl shadow-xl border border-slate-200/80 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 fade-in" style="transition-delay: 450ms;">
+                            <h3 class="text-2xl font-bold text-slate-900 mb-3">Suporte Técnico</h3>
+                            <p class="text-lg text-slate-700">Oferecemos acompanhamento contínuo por 6 ou 12 meses para garantir que tudo funcione perfeitamente e otimizar os resultados.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Gemini API Feature: ROI Calculator -->
+        <section id="roi-calculator" class="py-24 md:py-32 bg-white">
+            <div class="container mx-auto px-6 lg:px-8">
+                <div class="max-w-4xl mx-auto text-center">
+                    <h2 class="text-4xl md:text-5xl font-bold text-slate-900 mb-5 tracking-tight">Calcule o ROI da sua Automação ✨</h2>
+                    <p class="text-xl text-slate-700 mb-12">Veja o impacto financeiro da I.A. no seu negócio em 60 segundos.</p>
+                    
+                    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-8 fade-in">
+                        <div class="grid sm:grid-cols-2 gap-6 mb-4">
+                            <div>
+                                <label for="task-input" class="block text-left text-sm font-medium text-slate-700 mb-2">Tarefa Repetitiva</label>
+                                <input type="text" id="task-input" placeholder="Ex: Preencher planilhas" class="w-full px-4 py-3 text-base border-slate-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                            <div>
+                                <label for="employees-input" class="block text-left text-sm font-medium text-slate-700 mb-2">Nº de Funcionários na Tarefa</label>
+                                <input type="number" id="employees-input" placeholder="Ex: 3" class="w-full px-4 py-3 text-base border-slate-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                             <div>
+                                <label for="hours-input" class="block text-left text-sm font-medium text-slate-700 mb-2">Horas Gastas por Semana (por func.)</label>
+                                <input type="number" id="hours-input" placeholder="Ex: 5" class="w-full px-4 py-3 text-base border-slate-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                            <div>
+                                <label for="cost-input" class="block text-left text-sm font-medium text-slate-700 mb-2">Custo Médio/Hora do Funcionário (R$)</label>
+                                <input type="number" id="cost-input" placeholder="Ex: 25" class="w-full px-4 py-3 text-base border-slate-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                        </div>
+                        <button id="calculate-roi-button" class="w-full bg-blue-700 text-white font-semibold text-lg px-8 py-4 mt-4 rounded-xl shadow-lg hover:bg-blue-800 transition-all transform hover:scale-105 disabled:bg-blue-400 disabled:scale-100 flex items-center justify-center">
+                            <span class="button-text">Calcular Potencial de Economia</span>
+                            <div class="loader hidden"></div>
+                        </button>
+                        <div id="roi-output" class="mt-8 text-left hidden">
+                            <div class="bg-white border border-slate-200 rounded-lg p-6">
+                                <h3 class="text-2xl font-bold text-slate-900">Resultado da Análise</h3>
+                                <p id="quantitative-result" class="mt-4 text-lg text-slate-700"></p>
+                                <div id="qualitative-result-container" class="mt-4 pt-4 border-t border-slate-200">
+                                     <p class="flex items-center text-base text-slate-600">
+                                        <span class="font-semibold mr-2">Análise da I.A.:</span>
+                                        <span id="loader-ai" class="loader-dark"></span>
+                                     </p>
+                                     <p id="qualitative-result" class="mt-2 text-lg text-slate-700"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. Testimonials Section -->
+        <section id="testimonials" class="py-24 md:py-32 subtle-bg-pattern">
+            <div class="container mx-auto px-6 lg:px-8">
+                <div class="text-center mb-20">
+                    <h2 class="text-4xl md:text-5xl font-bold text-slate-900 mb-5 tracking-tight">O que nossos clientes dizem</h2>
+                    <p class="text-xl text-slate-700 max-w-3xl mx-auto">Resultados reais de empresas que transformaram seus processos conosco.</p>
+                </div>
+                <div class="testimonial-slider pb-4 -mx-6 px-6 lg:grid lg:grid-cols-2 lg:gap-8 xl:grid-cols-4">
+                    <!-- Testimonial 1 -->
+                    <div class="testimonial-card bg-white p-8 rounded-3xl shadow-xl border border-slate-200 fade-in mr-4 lg:mr-0">
+                        <div class="flex items-center mb-5">
+                            <img src="https://placehold.co/100x100/e0e7ff/3730a3?text=MS" alt="Avatar Maria Santos" class="w-14 h-14 rounded-full mr-4 object-cover">
+                            <div>
+                                <div class="text-yellow-500 flex text-xl">★★★★★</div>
+                            </div>
+                        </div>
+                        <p class="text-lg text-slate-800 mb-5 leading-relaxed">"Conseguimos automatizar 80% dos processos e economizar R$ 50 mil por mês."</p>
+                        <p class="font-bold text-slate-900 text-lg">Maria Santos</p>
+                        <p class="text-base text-slate-600">Diretora da TechCorp</p>
+                    </div>
+                    <!-- Testimonial 2 -->
+                    <div class="testimonial-card bg-white p-8 rounded-3xl shadow-xl border border-slate-200 fade-in mr-4 lg:mr-0" style="transition-delay: 150ms;">
+                        <div class="flex items-center mb-5">
+                            <img src="https://placehold.co/100x100/e0e7ff/3730a3?text=JS" alt="Avatar João Silva" class="w-14 h-14 rounded-full mr-4 object-cover">
+                            <div>
+                                <div class="text-yellow-500 flex text-xl">★★★★★</div>
+                            </div>
+                        </div>
+                        <p class="text-lg text-slate-800 mb-5 leading-relaxed">"Reduzimos 65% do tempo em processos administrativos em apenas 3 meses."</p>
+                        <p class="font-bold text-slate-900 text-lg">João Silva</p>
+                        <p class="text-base text-slate-600">CEO da LogiPro</p>
+                    </div>
+                    <!-- Testimonial 3 -->
+                    <div class="testimonial-card bg-white p-8 rounded-3xl shadow-xl border border-slate-200 fade-in mr-4 lg:mr-0" style="transition-delay: 300ms;">
+                        <div class="flex items-center mb-5">
+                            <img src="https://placehold.co/100x100/e0e7ff/3730a3?text=CM" alt="Avatar Carlos Mendes" class="w-14 h-14 rounded-full mr-4 object-cover">
+                            <div>
+                                <div class="text-yellow-500 flex text-xl">★★★★★</div>
+                            </div>
+                        </div>
+                        <p class="text-lg text-slate-800 mb-5 leading-relaxed">"O retorno foi imediato. Em 2 meses já tínhamos economizado mais que o investimento."</p>
+                        <p class="font-bold text-slate-900 text-lg">Carlos Mendes</p>
+                        <p class="text-base text-slate-600">Diretor da AutoTech</p>
+                    </div>
+                    <!-- Testimonial 4 -->
+                    <div class="testimonial-card bg-white p-8 rounded-3xl shadow-xl border border-slate-200 fade-in" style="transition-delay: 450ms;">
+                        <div class="flex items-center mb-5">
+                            <img src="https://placehold.co/100x100/e0e7ff/3730a3?text=DP" alt="Avatar Dra. Paula" class="w-14 h-14 rounded-full mr-4 object-cover">
+                            <div>
+                                <div class="text-yellow-500 flex text-xl">★★★★★</div>
+                            </div>
+                        </div>
+                        <p class="text-lg text-slate-800 mb-5 leading-relaxed">"Nosso faturamento aumentou 20k em apenas 1 mês e meio com a Secretaria de IA."</p>
+                        <p class="font-bold text-slate-900 text-lg">Dra. Paula</p>
+                        <p class="text-base text-slate-600">Clinica Harmoni</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. FAQ Section -->
+        <section id="faq" class="py-24 md:py-32 subtle-bg-pattern">
+            <div class="container mx-auto px-6 lg:px-8">
+                <div class="max-w-4xl mx-auto">
+                    <div class="text-center mb-16">
+                        <h2 class="text-4xl md:text-5xl font-bold text-slate-900 mb-5 tracking-tight">Perguntas Frequentes</h2>
+                        <p class="text-xl text-slate-700">Tudo o que você precisa saber antes de começar.</p>
+                    </div>
+                    <div class="space-y-5 fade-in" id="faq-accordion">
+                        <!-- FAQ Item 1 -->
+                        <div class="bg-white border border-slate-200/80 rounded-2xl">
+                            <button class="faq-toggle w-full flex justify-between items-center text-left p-6 font-semibold text-slate-800 text-lg">
+                                <span>Como funciona o diagnóstico inicial?</span>
+                                <i data-feather="chevron-down" class="w-6 h-6 transition-transform duration-300"></i>
+                            </button>
+                            <div class="faq-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+                                <p class="px-6 pb-6 text-slate-700 text-lg leading-relaxed">
+                                    Fazemos uma análise completa dos seus processos em 2-3 dias para identificar os pontos de melhoria e as melhores oportunidades de automação para o seu negócio.
+                                </p>
+                            </div>
+                        </div>
+                        <!-- FAQ Item 2 -->
+                        <div class="bg-white border border-slate-200/80 rounded-2xl">
+                            <button class="faq-toggle w-full flex justify-between items-center text-left p-6 font-semibold text-slate-800 text-lg">
+                                <span>Quanto tempo demora para implementar?</span>
+                                <i data-feather="chevron-down" class="w-6 h-6 transition-transform duration-300"></i>
+                            </button>
+                            <div class="faq-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+                                <p class="px-6 pb-6 text-slate-700 text-lg leading-relaxed">
+                                    O tempo de implementação varia, mas normalmente leva entre 1 e 3 meses, dependendo da complexidade e do tamanho da sua empresa. Nosso objetivo é entregar valor o mais rápido possível.
+                                </p>
+                            </div>
+                        </div>
+                        <!-- FAQ Item 3 -->
+                        <div class="bg-white border border-slate-200/80 rounded-2xl">
+                            <button class="faq-toggle w-full flex justify-between items-center text-left p-6 font-semibold text-slate-800 text-lg">
+                                <span>Preciso entender de tecnologia?</span>
+                                <i data-feather="chevron-down" class="w-6 h-6 transition-transform duration-300"></i>
+                            </button>
+                            <div class="faq-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+                                <p class="px-6 pb-6 text-slate-700 text-lg leading-relaxed">
+                                    Absolutamente não! Nós cuidamos de toda a parte técnica. Usamos ferramentas intuitivas e fornecemos um treinamento completo para que sua equipe se sinta confortável e confiante para usar as novas automações.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. Final CTA -->
+        <section id="final-cta" class="relative overflow-hidden cta-gradient py-24 md:py-40">
+            <div class="container mx-auto px-6 lg:px-8">
+                <div class="bg-white p-10 md:p-16 rounded-3xl shadow-2xl border border-slate-200">
+                    <div class="grid md:grid-cols-2 gap-10 items-center">
+                        <div class="text-center md:text-left fade-in">
+                            <h2 class="text-4xl md:text-5xl font-bold text-slate-900 mb-5 tracking-tight">Pronto para escalar seu negócio?</h2>
+                            <p class="text-xl text-slate-700 mb-10">Agende um diagnóstico gratuito e descubra o potencial da automação com I.A. para sua empresa.</p>
+                            <a href="https://wa.me/21996293642" target="_blank" rel="noopener noreferrer" class="inline-block bg-blue-700 text-white font-semibold text-lg px-8 py-4 rounded-xl shadow-lg hover:bg-blue-800 transition-all transform hover:scale-105 hover:shadow-blue-300">
+                                Agendar Diagnóstico Gratuito
+                            </a>
+                        </div>
+                        <div class="flex justify-center fade-in" style="transition-delay: 200ms;">
+                            <img src="https://placehold.co/400x300/dbeafe/1e3a8a?text=App+Mockup" alt="App Mockup" class="rounded-2xl shadow-lg w-full max-w-sm h-auto object-cover">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 8. Footer -->
+    <footer class="bg-slate-900 text-slate-400">
+        <div class="container mx-auto px-6 lg:px-8 py-12">
+            <div class="flex flex-col sm:flex-row justify-between items-center">
+                <p class="text-base mb-4 sm:mb-0">&copy; 2025 A&T Intelligence. Todos os direitos reservados.</p>
+                <div class="flex space-x-5">
+                    <a href="#" class="hover:text-white transition-colors"><i data-feather="linkedin" class="w-6 h-6"></i></a>
+                    <a href="#" class="hover:text-white transition-colors"><i data-feather="instagram" class="w-6 h-6"></i></a>
+                    <a href="#" class="hover:text-white transition-colors"><i data-feather="facebook" class="w-6 h-6"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Feather Icons
+        feather.replace();
+
+        // Mobile Menu Toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const allLinks = mobileMenu.querySelectorAll('a');
+
+        function toggleMenu() {
+            mobileMenu.classList.toggle('hidden');
+        }
+
+        mobileMenuButton.addEventListener('click', toggleMenu);
+        allLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (!mobileMenu.classList.contains('hidden')) {
+                    toggleMenu();
+                }
+            });
+        });
+
+
+        // FAQ Accordion
+        const faqToggles = document.querySelectorAll('.faq-toggle');
+        faqToggles.forEach(toggle => {
+            toggle.addEventListener('click', () => {
+                const content = toggle.nextElementSibling;
+                const icon = toggle.querySelector('i');
+                const isOpen = content.style.maxHeight;
+
+                // Close all other accordions first
+                document.querySelectorAll('.faq-content').forEach((item, index) => {
+                    item.style.maxHeight = null;
+                    const otherIcon = faqToggles[index].querySelector('i');
+                    if (otherIcon) {
+                        otherIcon.style.transform = 'rotate(0deg)';
+                    }
+                });
+                
+                // If the clicked one wasn't open, open it
+                if (!isOpen) {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                    if (icon) {
+                        icon.style.transform = 'rotate(180deg)';
+                    }
+                }
+            });
+        });
+
+        // Fade-in on Scroll Animation
+        const fadeInElements = document.querySelectorAll('.fade-in');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.15
+        });
+
+        fadeInElements.forEach(el => {
+            observer.observe(el);
+        });
+
+        // Navbar shadow on scroll
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 20) {
+                navbar.classList.add('shadow-md', 'border-slate-200');
+                navbar.classList.remove('border-slate-200/80');
+            } else {
+                navbar.classList.remove('shadow-md', 'border-slate-200');
+                navbar.classList.add('border-slate-200/80');
+            }
+        });
+
+        // --- Gemini API Feature: ROI Calculator ---
+        const calculateButton = document.getElementById('calculate-roi-button');
+        const taskInput = document.getElementById('task-input');
+        const employeesInput = document.getElementById('employees-input');
+        const hoursInput = document.getElementById('hours-input');
+        const costInput = document.getElementById('cost-input');
+        const roiOutput = document.getElementById('roi-output');
+        const quantitativeResultEl = document.getElementById('quantitative-result');
+        const qualitativeResultEl = document.getElementById('qualitative-result');
+        const aiLoader = document.getElementById('loader-ai');
+        const calcButtonText = calculateButton.querySelector('.button-text');
+        const calcLoader = calculateButton.querySelector('.loader');
+
+        const handleCalculateROI = async () => {
+            const task = taskInput.value.trim();
+            const employees = parseFloat(employeesInput.value);
+            const hours = parseFloat(hoursInput.value);
+            const cost = parseFloat(costInput.value);
+
+            if (!task || isNaN(employees) || isNaN(hours) || isNaN(cost) || employees <= 0 || hours <= 0 || cost <= 0) {
+                quantitativeResultEl.textContent = "Por favor, preencha todos os campos com valores válidos.";
+                qualitativeResultEl.textContent = "";
+                roiOutput.classList.remove('hidden');
+                return;
+            }
+
+            // --- UI Updates: Start Loading ---
+            calcButtonText.classList.add('hidden');
+            calcLoader.classList.remove('hidden');
+            calculateButton.disabled = true;
+            [taskInput, employeesInput, hoursInput, costInput].forEach(el => el.disabled = true);
+            roiOutput.classList.remove('hidden');
+            aiLoader.classList.remove('hidden');
+            qualitativeResultEl.textContent = "";
+
+            // --- Quantitative Calculation ---
+            const weeklyHours = employees * hours;
+            const annualHours = weeklyHours * 52;
+            const annualCost = annualHours * cost;
+            const formatter = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+            quantitativeResultEl.innerHTML = `Com base nos dados fornecidos, a automação desta tarefa poderia gerar uma economia anual estimada de <strong class="text-blue-700">${formatter.format(annualCost)}</strong>.`;
+
+            // --- Gemini API Call for Qualitative Analysis ---
+            const prompt = `Você é um consultor de automação da A&T Intelligence. Baseado nos seguintes dados de um cliente em potencial:\n- Tarefa a ser automatizada: "${task}"\n- Número de funcionários: ${employees}\n- Horas gastas por semana por funcionário: ${hours}\n- Custo/hora por funcionário: R$${cost}\n- Economia anual estimada: ${formatter.format(annualCost)}\n\nGere uma breve análise qualitativa (2-3 frases) sobre os benefícios adicionais da automação para este cenário específico. Foque em aspectos como redução de erros, aumento da produtividade, moral da equipe ou liberação de tempo para tarefas estratégicas. Comece com "Além da economia direta...".`;
+
+            try {
+                let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+                const payload = { contents: chatHistory };
+                const apiKey = ""; // API key will be provided by the environment
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) throw new Error(`API error: ${response.statusText}`);
+
+                const result = await response.json();
+
+                if (result.candidates && result.candidates[0]?.content?.parts[0]?.text) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    qualitativeResultEl.innerHTML = text.replace(/\n/g, '<br>');
+                } else {
+                    throw new Error("Resposta inválida da API.");
+                }
+
+            } catch (error) {
+                console.error("Error calling Gemini API:", error);
+                qualitativeResultEl.textContent = "Não foi possível carregar a análise da I.A. no momento.";
+            } finally {
+                // --- UI Updates: Stop Loading ---
+                aiLoader.classList.add('hidden');
+                calcButtonText.classList.remove('hidden');
+                calcLoader.classList.add('hidden');
+                calculateButton.disabled = false;
+                 [taskInput, employeesInput, hoursInput, costInput].forEach(el => el.disabled = false);
+            }
+        };
+
+        calculateButton.addEventListener('click', handleCalculateROI);
+
+    </script>
+
+</body>
+</html>
