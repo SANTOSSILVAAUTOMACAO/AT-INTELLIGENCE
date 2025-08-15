@@ -520,6 +520,30 @@
         const calcButtonText = calculateButton.querySelector('.button-text');
         const calcLoader = calculateButton.querySelector('.loader');
 
+        // Helper function for fetching with exponential backoff
+        const fetchWithRetry = async (url, options, retries = 3, backoff = 1000) => {
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (!response.ok) {
+                        // Throw an error for server-side issues to trigger a retry
+                        if (response.status >= 500) {
+                           throw new Error(`API Server Error: ${response.status} ${response.statusText}`);
+                        }
+                        // For client-side errors, don't retry, just fail
+                        const errorData = await response.json();
+                        throw new Error(`API Client Error: ${response.status} ${response.statusText} - ${errorData?.error?.message}`);
+                    }
+                    return response.json();
+                } catch (error) {
+                    console.error(`Attempt ${i + 1} failed:`, error.message);
+                    if (i === retries - 1) throw error; // Rethrow the last error
+                    await new Promise(res => setTimeout(res, backoff));
+                    backoff *= 2; // Increase backoff delay
+                }
+            }
+        };
+
         const handleCalculateROI = async () => {
             const task = taskInput.value.trim();
             const employees = parseFloat(employeesInput.value);
@@ -557,26 +581,24 @@
                 const payload = { contents: chatHistory };
                 const apiKey = ""; // API key will be provided by the environment
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
-
-                const response = await fetch(apiUrl, {
+                
+                const fetchOptions = {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
-                });
+                };
 
-                if (!response.ok) throw new Error(`API error: ${response.statusText}`);
-
-                const result = await response.json();
+                const result = await fetchWithRetry(apiUrl, fetchOptions);
 
                 if (result.candidates && result.candidates[0]?.content?.parts[0]?.text) {
                     const text = result.candidates[0].content.parts[0].text;
                     qualitativeResultEl.innerHTML = text.replace(/\n/g, '<br>');
                 } else {
-                    throw new Error("Resposta inválida da API.");
+                    throw new Error("Resposta inválida da API após múltiplas tentativas.");
                 }
 
             } catch (error) {
-                console.error("Error calling Gemini API:", error);
+                console.error("Error calling Gemini API after retries:", error);
                 qualitativeResultEl.textContent = "Não foi possível carregar a análise da I.A. no momento.";
             } finally {
                 // --- UI Updates: Stop Loading ---
